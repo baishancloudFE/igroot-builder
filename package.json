@@ -1,5 +1,5 @@
 {
-  "name": "groot-builder",
+  "name": "gotc-groot-builder",
   "version": "0.0.1",
   "description": "",
   "scripts": {
@@ -43,7 +43,7 @@
     "yargs": "^8.0.1"
   },
   "engines": {
-    "node": ">= 6.9.3",
+    "node": ">= 6.9.0",
     "npm": ">= 3"
   }
 }
