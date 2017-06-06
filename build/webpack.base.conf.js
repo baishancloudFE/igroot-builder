@@ -24,7 +24,8 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
-      '@': resolve('src')
+      '@': resolve('src'),
+      'groot': 'gotc-groot'
     }
   },
   module: {
@@ -40,7 +41,7 @@ module.exports = {
             "stage-0"
           ],
           plugins: [
-            // ["import", { "libraryName": "antd", "style": "css" }]
+            ["import", { "libraryName": "groot", "style": "css" }]
           ],
           filename: __dirname
         }
