@@ -1,5 +1,6 @@
 module.exports = function() {
   require('./check-versions')()
+  require('./utils').colors()
 
   var config = require('../config')
   if (!process.env.NODE_ENV) {
@@ -17,8 +18,10 @@ module.exports = function() {
 
   // default port where dev server listens for incoming traffic
   var port = process.env.PORT || config.dev.port
+  
   // automatically open browser, if not set will be false
   var autoOpenBrowser = !!config.dev.autoOpenBrowser
+
   // Define HTTP proxies to your custom API backend
   // https://github.com/chimurai/http-proxy-middleware
   var proxyTable = config.dev.proxyTable
@@ -34,6 +37,7 @@ module.exports = function() {
   var hotMiddleware = require('webpack-hot-middleware')(compiler, {
     log: () => {}
   })
+
   // force page reload when html-webpack-plugin template changes
   compiler.plugin('compilation', function (compilation) {
     compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
@@ -74,13 +78,16 @@ module.exports = function() {
 
   console.log('> Starting dev server...')
   devMiddleware.waitUntilValid(() => {
-    console.log('> Listening at ' + uri + '\n')
+    console.log('> Listening at ' + uri.info + '\n')
     // when env is testing, don't need open it
     if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
       opn(uri)
     }
     _resolve()
   })
+
+  // redirect to the home page
+  app.use('/', (req, res) => res.redirect(`/${require('./utils').appConfig('homepage')}/index.html`))
 
   var server = app.listen(port)
 

@@ -1,5 +1,5 @@
 {
-  "name": "gotc-groot-builder",
+  "name": "igroot-builder",
   "version": "0.0.2",
   "description": "",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "main": "./index.js",
   "bin": {
-    "groot-builder": "./bin/groot-builder.js"
+    "igroot-builder": "./bin/igroot-builder.js"
   },
   "dependencies": {
     "babel-core": "^6.24.1",

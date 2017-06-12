@@ -11,7 +11,7 @@ const entry = {}
 utils.subdir().forEach(dir => entry[dir] = resolve(`src/pages/${dir}/index.jsx`))
 
 module.exports = {
-  entry: entry,
+  entry,
 
   output: {
     path: config.build.assetsRoot,
@@ -24,8 +24,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
-      '@': resolve('src'),
-      'groot': 'gotc-groot'
+      '@': resolve('src')
     }
   },
   module: {
@@ -41,7 +40,7 @@ module.exports = {
             "stage-0"
           ],
           plugins: [
-            ["import", { "libraryName": "groot", "style": "css" }]
+            ["import", { "libraryName": "igroot", "style": "css" }]
           ],
           filename: __dirname
         }

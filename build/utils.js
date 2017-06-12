@@ -1,7 +1,8 @@
 const fs = require('fs')
 const path = require('path')
-const config = require('../config')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+
+const config = require('../config')
 const appConfig = require(path.resolve('bsy.json')).options
 
 exports.assetsPath = function (_path) {
@@ -58,7 +59,7 @@ exports.cssLoaders = function (options) {
   }
 }
 
-// Generate loaders for standalone style files (outside of .vue)
+// Generate loaders for standalone style files
 exports.styleLoaders = function (options) {
   var output = []
   var loaders = exports.cssLoaders(options)
@@ -78,4 +79,15 @@ exports.appConfig = function(context) {
 
 exports.subdir = function() {
   return fs.readdirSync(path.resolve('src/pages'))
+}
+
+exports.colors = function() {
+  require('colors').setTheme({
+    error: 'red',
+    success: 'green',
+    warn: 'yellow',
+    info: 'cyan',
+    data: 'gray',
+    wahaha: 'rainbow'
+  })
 }
