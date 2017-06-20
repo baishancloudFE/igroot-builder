@@ -40,7 +40,12 @@ module.exports = {
             "stage-0"
           ],
           plugins: [
-            ["import", { "libraryName": "igroot", "style": "css" }]
+            ["import", {
+              "libraryName": "igroot",
+              "style": utils.appConfig('theme')
+                ? true
+                : "css"
+            }]
           ],
           filename: __dirname
         }
