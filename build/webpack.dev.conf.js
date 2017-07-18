@@ -27,12 +27,12 @@ module.exports = merge(baseWebpackConfig, {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new FriendlyErrorsPlugin()
-  ].concat(utils.subdir().map(dir => {
+  ].concat(utils.subdir.map(dir => {
     // https://github.com/ampedandwired/html-webpack-plugin
     return new HtmlWebpackPlugin({
       filename: `${dir}/index.html`,
       template: path.resolve(`src/pages/${dir}/index.html`),
-      inject: true
+      chunks: [dir]
     })
   }))
 })

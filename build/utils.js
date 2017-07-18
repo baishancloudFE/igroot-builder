@@ -77,9 +77,10 @@ exports.appConfig = function(context) {
   return appConfig[context]
 }
 
-exports.subdir = function() {
-  return fs.readdirSync(path.resolve('src/pages'))
-}
+exports.subdir = fs
+  .readdirSync(path.resolve('src/pages'))
+  .filter(file => fs.lstatSync(path.resolve(`src/pages/${file}`)).isDirectory())
+
 
 exports.colors = function() {
   require('colors').setTheme({

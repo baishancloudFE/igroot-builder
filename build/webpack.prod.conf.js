@@ -76,7 +76,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         ignore: ['.*']
       }
     ])
-  ].concat(utils.subdir().map(dir => {
+  ].concat(utils.subdir.map(dir => {
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
@@ -85,7 +85,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         ? `${dir}/index.html`
         : `${config.build.indexRoot}/${dir}.html`,
       template: path.resolve(`src/pages/${dir}/index.html`),
-      inject: true,
+      chunks: [dir],
       minify: {
         removeComments: true,
         collapseWhitespace: true,

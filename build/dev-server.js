@@ -12,6 +12,7 @@ module.exports = function() {
   var express = require('express')
   var webpack = require('webpack')
   var proxyMiddleware = require('http-proxy-middleware')
+  var utils = require('./utils')
   var webpackConfig = process.env.NODE_ENV === 'testing'
     ? require('./webpack.prod.conf')
     : require('./webpack.dev.conf')
@@ -86,8 +87,19 @@ module.exports = function() {
     _resolve()
   })
 
+  const appPort = utils.appConfig('port')
+  const pagesProxy = {}
+
+  // register pages routing
+  utils.subdir.forEach(dir => {
+    app.use(proxyMiddleware(`/${dir}`, {
+      target: `http://localhost:${appPort}/${dir}/index.html`,
+      pathRewrite: {[`^/${dir}`] : ""}
+    }))
+  })
+
   // redirect to the home page
-  app.use('/', (req, res) => res.redirect(`/${require('./utils').appConfig('homepage')}/index.html`))
+  app.use('/', (req, res) => res.redirect(`/${utils.appConfig('homepage')}`))
 
   var server = app.listen(port)
 

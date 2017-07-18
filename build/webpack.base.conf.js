@@ -8,7 +8,7 @@ function resolve(dir = '') {
 }
 
 const entry = {}
-utils.subdir().forEach(dir => entry[dir] = resolve(`src/pages/${dir}/index.jsx`))
+utils.subdir.forEach(dir => entry[dir] = resolve(`src/pages/${dir}/index.jsx`))
 
 module.exports = {
   entry,
@@ -28,6 +28,7 @@ module.exports = {
       '@@': resolve('src/apis/index.js')
     }
   },
+
   module: {
     rules: [
       {
