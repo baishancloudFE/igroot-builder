@@ -14,7 +14,7 @@ module.exports = function() {
   var proxyMiddleware = require('http-proxy-middleware')
   var utils = require('./utils')
   var webpackConfig = process.env.NODE_ENV === 'testing'
-    ? require('./webpack.prod.conf')
+    ? require('./webpack.prod.conf')()
     : require('./webpack.dev.conf')
 
   // default port where dev server listens for incoming traffic
@@ -32,7 +32,7 @@ module.exports = function() {
 
   var devMiddleware = require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
-    quiet: true
+    quiet: false
   })
 
   var hotMiddleware = require('webpack-hot-middleware')(compiler, {
