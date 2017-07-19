@@ -2,6 +2,9 @@ module.exports = function(context, hasClear = true) {
   if(typeof context !== 'string')
     throw new TypeError('\'context\' must be a string!')
 
+  if(hasClear)
+    console.log('Clearing dist dir...')
+
   require('./check-versions')()
 
   process.env.NODE_ENV = context
@@ -15,8 +18,6 @@ module.exports = function(context, hasClear = true) {
   const webpackConfig = require('./webpack.prod.conf')()
 
   const spinner = ora(`building for ${context}...`)
-
-  console.log('Clearing dist dir...')
 
   return new Promise((reslove, reject) => {
     if (hasClear) {
