@@ -1,6 +1,6 @@
 {
   "name": "igroot-builder",
-  "version": "0.1.2",
+  "version": "0.2.2",
   "description": "",
   "scripts": {
     "run": "node build/dev-server.js",
