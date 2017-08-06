@@ -32,7 +32,7 @@ module.exports = function() {
     plugins: [
       new webpack.DefinePlugin({
         'process.env': env,
-        APP_CONFIG: JSON.stringify(utils.appConfig(isTesting ? 'test' : 'prod'))
+        APP_CONFIG: JSON.stringify(utils.appConfig[isTesting ? 'test' : 'prod'])
       }),
       new webpack.optimize.UglifyJsPlugin({
         compress: {
@@ -84,11 +84,13 @@ module.exports = function() {
       // you can customize output by editing /index.html
       // see https://github.com/ampedandwired/html-webpack-plugin
       return new HtmlWebpackPlugin({
-        filename: process.env.NODE_ENV === 'testing'
-          ? `${config.build.indexRoot}/test/${dir}.html`
-          : `${config.build.indexRoot}/prod/${dir}.html`,
+        filename: ''
+          + config.build.indexRoot
+          + process.env.NODE_ENV === 'testing' ? '/test/' : '/prod/'
+          + utils.appConfig.homepage === dir ? 'index' : dir
+          + '.html',
         template: path.resolve(`src/pages/${dir}/index.html`),
-        chunks: [dir],
+        chunks: [dir, 'manifest'],
         minify: {
           removeComments: true,
           collapseWhitespace: true,
@@ -109,11 +111,7 @@ module.exports = function() {
       new CompressionWebpackPlugin({
         asset: '[path].gz[query]',
         algorithm: 'gzip',
-        test: new RegExp(
-          '\\.(' +
-          config.build.productionGzipExtensions.join('|') +
-          ')$'
-        ),
+        test: new RegExp('\\.(' + config.build.productionGzipExtensions.join('|') + ')$'),
         threshold: 10240,
         minRatio: 0.8
       })

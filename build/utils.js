@@ -73,21 +73,25 @@ exports.styleLoaders = function (options) {
   return output
 }
 
-exports.appConfig = function(context) {
-  return appConfig[context]
-}
+// bys.json 配置
+exports.appConfig = appConfig
 
+// pages 文件夹下所有文件夹名
 exports.subdir = fs
   .readdirSync(path.resolve('src/pages'))
   .filter(file => fs.lstatSync(path.resolve(`src/pages/${file}`)).isDirectory())
 
-
+// 控制台打印颜色
 exports.colors = function() {
   require('colors').setTheme({
     error: 'red',
+    bgError: 'bgRed',
     success: 'green',
+    bgSuccess: 'bgGreen',
     warn: 'yellow',
+    bgWarn: 'bgYellow',
     info: 'cyan',
+    secInfo: 'magenta',
     data: 'gray',
     wahaha: 'rainbow'
   })

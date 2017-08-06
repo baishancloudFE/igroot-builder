@@ -10,6 +10,59 @@ function resolve(dir = '') {
 const entry = {}
 utils.subdir.forEach(dir => entry[dir] = resolve(`src/pages/${dir}/index.jsx`))
 
+const rules = [
+  {
+    test: /\.(js|jsx)$/,
+    loader: 'babel-loader',
+    include: resolve('src'),
+    options: {
+      presets: [
+        "es2015",
+        "react",
+        "stage-0"
+      ],
+      plugins: [
+        "transform-decorators-legacy",
+        ["import", {
+          "libraryName": "igroot",
+          "style": utils.appConfig.theme
+            ? true
+            : "css"
+        }]
+      ],
+      filename: __dirname
+    }
+  },
+  {
+    test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+    loader: 'url-loader',
+    options: {
+      limit: 10000,
+      name: utils.assetsPath('img/[name].[hash:7].[ext]')
+    }
+  },
+  {
+    test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+    loader: 'url-loader',
+    options: {
+      limit: 10000,
+      name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+    }
+  }
+]
+
+if(utils.appConfig.lint) {
+  rules.unshift({
+    enforce: "pre",
+    test: /\.(js|jsx)$/,
+    loader: 'eslint-loader',
+    exclude: /node_modules/,
+    options: {
+      configFile: path.join(__dirname, '../.eslintrc')
+    }
+  })
+}
+
 module.exports = {
   entry,
 
@@ -29,46 +82,6 @@ module.exports = {
     }
   },
 
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        loader: 'babel-loader',
-        include: resolve('src'),
-        options: {
-          presets: [
-            "es2015",
-            "react",
-            "stage-0"
-          ],
-          plugins: [
-            ["import", {
-              "libraryName": "igroot",
-              "style": utils.appConfig('theme')
-                ? true
-                : "css"
-            }]
-          ],
-          filename: __dirname
-        }
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: utils.assetsPath('img/[name].[hash:7].[ext]')
-        }
-      },
-      {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
-        }
-      }
-    ]
-  },
+  module: { rules },
   context: path.join(__dirname, '../')
 }

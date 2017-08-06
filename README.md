@@ -15,6 +15,9 @@ builder.run()
 
 // 打包应用
 builder.build()
+
+// 代码检测
+builder.lint()
 ```
 #### 命令调用(开发调试用)
 命令的执行依赖于当前路径，因此，请在项目根目录中使用
@@ -24,4 +27,7 @@ igroot-builder run
 
 # 打包应用
 igroot-builder build
+
+# 代码检测
+igroot-builder lint
 ```

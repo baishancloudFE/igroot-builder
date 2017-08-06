@@ -4,16 +4,19 @@ const path = require('path')
 
 const run = require('../build/dev-server')
 const build = require('../build/build')
+const lint = require('../build/lint')
 
 require('yargs')
   .usage('iGroot Builder')
   .command('run', 'Run your application locally', {}, argv => run())
-  .command('build', 'Pack your application', {}, argv => {
-    const build = require('../build/build')
+  .command('build', 'Pack your application', {}, ({ test, prod }) => {
+      const build = require('../build/build')
 
-    build('testing')
-      .then(() => build('production', false))
-  })
+      test !== false && build('testing')
+      prod !== false && build('production')
+    }
+  )
+  .command('lint', 'Lint your code', {}, ({ fix }) => lint(fix !== false))
   .demandCommand()
   .help()
   .alias('h', 'help')

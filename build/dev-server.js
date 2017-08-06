@@ -18,7 +18,10 @@ module.exports = function() {
     : require('./webpack.dev.conf')
 
   // default port where dev server listens for incoming traffic
-  var port = process.env.PORT || config.dev.port
+  var port = process.env.PORT || utils.appConfig.port || config.dev.port
+
+  // default domain where browsers open the tab
+  var domain = utils.appConfig.domain || config.dev.domain
   
   // automatically open browser, if not set will be false
   var autoOpenBrowser = !!config.dev.autoOpenBrowser
@@ -32,7 +35,7 @@ module.exports = function() {
 
   var devMiddleware = require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
-    quiet: false
+    quiet: true
   })
 
   var hotMiddleware = require('webpack-hot-middleware')(compiler, {
@@ -70,7 +73,7 @@ module.exports = function() {
   var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
   app.use(staticPath, express.static('./src/static'))
 
-  var uri = 'http://localhost:' + port
+  var uri = `http://${domain}:${port}`
 
   var _resolve
   var readyPromise = new Promise(resolve => {
@@ -87,19 +90,18 @@ module.exports = function() {
     _resolve()
   })
 
-  const appPort = utils.appConfig('port')
   const pagesProxy = {}
 
   // register pages routing
   utils.subdir.forEach(dir => {
     app.use(proxyMiddleware(`/${dir}`, {
-      target: `http://localhost:${appPort}/${dir}/index.html`,
+      target: `http://${domain}:${port}/${dir}/index.html`,
       pathRewrite: {[`^/${dir}`] : ""}
     }))
   })
 
   // redirect to the home page
-  app.use('/', (req, res) => res.redirect(`/${utils.appConfig('homepage')}`))
+  app.use('/', (req, res) => res.redirect(`/${utils.appConfig.homepage}`))
 
   var server = app.listen(port)
 
