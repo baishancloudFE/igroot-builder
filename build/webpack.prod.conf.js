@@ -90,7 +90,7 @@ module.exports = function() {
           + utils.appConfig.homepage === dir ? 'index' : dir
           + '.html',
         template: path.resolve(`src/pages/${dir}/index.html`),
-        chunks: [dir, 'manifest'],
+        chunks: ['manifest', 'vendor', dir],
         minify: {
           removeComments: true,
           collapseWhitespace: true,
