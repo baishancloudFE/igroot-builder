@@ -1,6 +1,6 @@
 {
   "name": "igroot-builder",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "",
   "scripts": {
     "run": "node build/dev-server.js",
@@ -25,6 +25,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.3",
     "eslint": "^4.2.0",
+    "eslint-loader": "^1.8.0",
     "eslint-plugin-react": "^7.1.0",
     "eventsource-polyfill": "^0.9.6",
     "express": "^4.15.3",
