@@ -4,6 +4,7 @@ module.exports = function() {
   const merge = require('webpack-merge')
   const CopyWebpackPlugin = require('copy-webpack-plugin')
   const HtmlWebpackPlugin = require('html-webpack-plugin')
+  const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
   const ExtractTextPlugin = require('extract-text-webpack-plugin')
   const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
   const utils = require('./utils')
@@ -26,30 +27,27 @@ module.exports = function() {
     devtool: config.build.productionSourceMap ? '#source-map' : false,
     output: {
       path: config.build.assetsRoot,
-      filename: utils.assetsPath('js/[name].[chunkhash].js'),
-      chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+      filename: utils.assetsPath('js/[name].js'),
+      chunkFilename: utils.assetsPath('js/[id].js')
     },
     plugins: [
+      // new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.DefinePlugin({
         'process.env': env,
         APP_CONFIG: JSON.stringify(utils.appConfig[isTesting ? 'test' : 'prod'])
       }),
-      new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          warnings: false
-        },
-        sourceMap: true
+      new UglifyJsWebpackPlugin({
+        cache: true,
+        parallel: 4
       }),
       // extract css into its own file
       new ExtractTextPlugin({
-        filename: utils.assetsPath('css/[name].[contenthash].css')
+        filename: utils.assetsPath('css/[name].css')
       }),
       // Compress extracted CSS. We are using this plugin so that possible
       // duplicated CSS from different components can be deduped.
       new OptimizeCSSPlugin({
-        cssProcessorOptions: {
-          safe: true
-        }
+        cssProcessorOptions: { safe: true }
       }),
       // split vendor js into its own file
       new webpack.optimize.CommonsChunkPlugin({
@@ -84,11 +82,7 @@ module.exports = function() {
       // you can customize output by editing /index.html
       // see https://github.com/ampedandwired/html-webpack-plugin
       return new HtmlWebpackPlugin({
-        filename: ''
-          + config.build.indexRoot
-          + process.env.NODE_ENV === 'testing' ? '/test/' : '/prod/'
-          + utils.appConfig.homepage === dir ? 'index' : dir
-          + '.html',
+        filename: `${dir}.html`,
         template: path.resolve(`src/pages/${dir}/index.html`),
         chunks: ['manifest', 'vendor', dir],
         minify: {

@@ -82,6 +82,12 @@ module.exports = {
     }
   },
 
+  // 下版本开启，react 和 react-dom 将使用静态公共资源库
+  // externals: {
+  //   react: 'React',
+  //   'react-dom': 'ReactDOM'
+  // },
+
   module: { rules },
   context: path.join(__dirname, '../')
 }
