@@ -35,7 +35,7 @@ module.exports = function() {
 
   var devMiddleware = require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
-    quiet: true
+    quiet: utils.appConfig.quiet || true
   })
 
   var hotMiddleware = require('webpack-hot-middleware')(compiler, {
@@ -92,16 +92,8 @@ module.exports = function() {
 
   const pagesProxy = {}
 
-  // register pages routing
-  utils.subdir.forEach(dir => {
-    app.use(proxyMiddleware(`/${dir}`, {
-      target: `http://${domain}:${port}/${dir}/index.html`,
-      pathRewrite: {[`^/${dir}`] : ""}
-    }))
-  })
-
   // redirect to the home page
-  app.use('/', (req, res) => res.redirect(`/${utils.appConfig.homepage}`))
+  app.use('/', (req, res) => res.redirect(`/${utils.appConfig.homepage}.html`))
 
   var server = app.listen(port)
 

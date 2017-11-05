@@ -30,7 +30,7 @@ module.exports = merge(baseWebpackConfig, {
   ].concat(utils.subdir.map(dir => {
     // https://github.com/ampedandwired/html-webpack-plugin
     return new HtmlWebpackPlugin({
-      filename: `${dir}/index.html`,
+      filename: `${dir}.html`,
       template: path.resolve(`src/pages/${dir}/index.html`),
       chunks: [dir]
     })
