@@ -10,7 +10,7 @@ function resolve(dir = '') {
 const entry = {}
 utils.subdir.forEach(dir => entry[dir] = resolve(`src/pages/${dir}/index.jsx`))
 
-const { businessComponents = [] } = utils.bsy
+const { businessComponents = [] } = utils.appConfig
 
 const rules = [
   {

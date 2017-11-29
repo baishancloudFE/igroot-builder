@@ -93,8 +93,16 @@ module.exports = function() {
 
   const pagesProxy = {}
 
+  // register pages routing
+  utils.subdir.forEach(dir => {
+    app.use(proxyMiddleware(`/${dir}`, {
+      target: `http://${domain}:${port}/${dir}.html`,
+      pathRewrite: {[`^/${dir}`] : ""}
+    }))
+  })
+
   // redirect to the home page
-  app.use('/', (req, res) => res.redirect(`/${utils.appConfig.homepage}.html`))
+  app.use('/', (req, res) => res.redirect(`/${utils.appConfig.homepage}`))
 
   var server = app.listen(port)
 

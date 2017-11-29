@@ -75,7 +75,6 @@ exports.styleLoaders = function (options) {
 }
 
 // bys.json 配置
-exports.bsy = bsy
 exports.appConfig = appConfig
 
 // pages 文件夹下所有文件夹名
