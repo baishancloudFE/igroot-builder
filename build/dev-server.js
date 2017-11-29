@@ -35,7 +35,8 @@ module.exports = function() {
 
   var devMiddleware = require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
-    quiet: utils.appConfig.quiet || true
+    quiet: utils.appConfig.quiet || true,
+    stats: {colors: true}
   })
 
   var hotMiddleware = require('webpack-hot-middleware')(compiler, {

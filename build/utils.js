@@ -3,7 +3,8 @@ const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const config = require('../config')
-const appConfig = require(path.resolve('bsy.json')).options
+const bsy = require(path.resolve('bsy.json'))
+const appConfig = bsy.options
 
 exports.assetsPath = function (_path) {
   var assetsSubDirectory = process.env.NODE_ENV === 'production'
@@ -74,6 +75,7 @@ exports.styleLoaders = function (options) {
 }
 
 // bys.json 配置
+exports.bsy = bsy
 exports.appConfig = appConfig
 
 // pages 文件夹下所有文件夹名

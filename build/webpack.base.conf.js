@@ -10,11 +10,16 @@ function resolve(dir = '') {
 const entry = {}
 utils.subdir.forEach(dir => entry[dir] = resolve(`src/pages/${dir}/index.jsx`))
 
+const { businessComponents = [] } = utils.bsy
+
 const rules = [
   {
     test: /\.(js|jsx)$/,
     loader: 'babel-loader',
-    include: resolve('src'),
+    include: [
+      resolve('src'),
+      ...businessComponents.map(component => resolve(`node_modules/${component}`))
+    ],
     options: {
       presets: [
         "es2015",

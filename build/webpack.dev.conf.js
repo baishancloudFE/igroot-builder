@@ -9,7 +9,7 @@ const baseWebpackConfig = require('./webpack.base.conf')
 
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
-  baseWebpackConfig.entry[name] = [path.join(__dirname, './dev-client.js')].concat(baseWebpackConfig.entry[name])
+  baseWebpackConfig.entry[name] = ['webpack-hot-middleware/client?noInfo=true&reload=true', baseWebpackConfig.entry[name]]
 })
 
 module.exports = merge(baseWebpackConfig, {
