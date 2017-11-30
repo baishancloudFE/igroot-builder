@@ -27,7 +27,7 @@ require('yargs')
           return build(env)
 
         default:
-          build('testing') && build('production')
+          build('testing') || build('production')
       }
     })
   })
