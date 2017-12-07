@@ -14,7 +14,8 @@
   },
   "plugins": ["react"],
   "globals": {
-    "APP_CONFIG": false
+    "APP_CONFIG": false,
+    "module": true
   },
   "rules": {
     "no-console": ["off"],

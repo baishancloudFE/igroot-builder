@@ -3,31 +3,31 @@
 const path = require('path')
 const inquirer = require('inquirer')
 
-const run = require('../build/dev-server')
+const dev = require('../build/dev-server')
 const build = require('../build/build')
 const lint = require('../build/lint')
 
 require('yargs')
   .usage('iGroot Builder')
-  .command('run', 'Run your application locally', {}, argv => run())
+  .command('dev', 'Run your application locally', {}, argv => dev())
   .command('build', 'Pack your application', {}, () => {
     const questions = [{
       type: 'list',
       name: 'env',
       message: 'Please select build env:',
-      choices: ['production', 'testing', 'production & testing (two package)']
+      choices: ['production', 'test', 'production & test (two package)']
     }]
 
     inquirer.prompt(questions).then(answers => {
       const { env } = answers
 
       switch (env) {
-        case 'testing':
+        case 'test':
         case 'production':
           return build(env)
 
         default:
-          build('testing') || build('production')
+          build('test') || build('production')
       }
     })
   })

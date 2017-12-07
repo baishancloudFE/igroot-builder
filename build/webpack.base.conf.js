@@ -1,42 +1,55 @@
 const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
-const isProd = process.env.NODE_ENV === 'production'
+const isDev = process.env.NODE_ENV === 'development'
 
 function resolve(dir = '') {
   return path.join(process.cwd(), dir)
 }
 
 const entry = {}
-utils.subdir.forEach(dir => entry[dir] = resolve(`src/pages/${dir}/index.jsx`))
+utils.subdir.forEach(dir => entry[dir] = [require.resolve('./polyfills'), resolve(`src/pages/${dir}/index.jsx`)])
 
-const { businessComponents = [] } = utils.appConfig
+const { businessComponents = [], externals } = utils.appConfig
 
 const rules = [
   {
     test: /\.(js|jsx)$/,
-    loader: 'babel-loader',
     include: [
       resolve('src'),
       ...businessComponents.map(component => resolve(`node_modules/${component}`))
     ],
-    options: {
-      presets: [
-        "es2015",
-        "react",
-        "stage-0"
-      ],
-      plugins: [
-        "transform-decorators-legacy",
-        ["import", {
-          "libraryName": "igroot",
-          "style": utils.appConfig.theme
+    use: [{
+      loader: 'babel-loader',
+      options: {
+        babelrc: false,
+        presets: [
+          ['env', {
+            modules: false,
+            targets: {
+              browsers: [
+                '>1%',
+                'last 4 versions',
+                'Firefox ESR',
+                'not ie < 9'
+              ]
+            }
+          }],
+          'react-app'
+        ],
+        plugins: [
+          "transform-decorators-legacy",
+          ["import", {
+            "libraryName": "igroot",
+            "style": utils.appConfig.theme
             ? true
             : "css"
-        }]
-      ],
-      filename: __dirname
-    }
+          }]
+        ],
+        [isDev ? 'cacheDirectory' : 'compact']: true,
+        filename: __dirname
+      }
+    }, 'react-hot-loader/webpack']
   },
   {
     test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -58,10 +71,10 @@ const rules = [
 
 if(utils.appConfig.lint) {
   rules.unshift({
-    enforce: "pre",
+    enforce: 'pre',
     test: /\.(js|jsx)$/,
     loader: 'eslint-loader',
-    exclude: /node_modules/,
+    include: /src/,
     options: {
       configFile: path.join(__dirname, '../.eslintrc')
     }
@@ -70,29 +83,37 @@ if(utils.appConfig.lint) {
 
 module.exports = {
   entry,
+  externals,
 
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+    publicPath: isDev
+    ? config.dev.assetsPublicPath
+    : (utils.appConfig.publicPath || config.build.assetsPublicPath)
   },
 
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
       '@': resolve('src'),
-      '@@': resolve('src/apis/index.js')
+      '@@': resolve('src/apis/index.js'),
+      '#': require.resolve('react-hot-loader')
     }
   },
 
-  // 下版本开启，react 和 react-dom 将使用静态公共资源库
-  // externals: {
-  //   react: 'React',
-  //   'react-dom': 'ReactDOM'
-  // },
+  module: {
+    rules,
+    strictExportPresence: true
+  },
 
-  module: { rules },
+  node: {
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    child_process: 'empty',
+  },
+
   context: path.join(__dirname, '../')
 }

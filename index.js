@@ -8,19 +8,19 @@ module.exports = {
       type: 'list',
       name: 'env',
       message: 'Please select build env:',
-      choices: ['production', 'testing', 'production & testing (two package)']
+      choices: ['production', 'test', 'production & test (two package)']
     }]
 
     inquirer.prompt(questions).then(answers => {
       const { env } = answers
 
       switch(env) {
-        case 'testing':
+        case 'test':
         case 'production':
           return build(env)
 
         default:
-          return build('testing') && build('production')
+          return build('test') || build('production')
       }
     })
   },

@@ -13,16 +13,14 @@ module.exports = function() {
   var webpack = require('webpack')
   var proxyMiddleware = require('http-proxy-middleware')
   var utils = require('./utils')
-  var webpackConfig = process.env.NODE_ENV === 'testing'
-    ? require('./webpack.prod.conf')()
-    : require('./webpack.dev.conf')
+  var webpackConfig = require('./webpack.dev.conf')
 
   // default port where dev server listens for incoming traffic
   var port = process.env.PORT || utils.appConfig.port || config.dev.port
 
   // default domain where browsers open the tab
   var domain = utils.appConfig.domain || config.dev.domain
-  
+
   // automatically open browser, if not set will be false
   var autoOpenBrowser = !!config.dev.autoOpenBrowser
 
@@ -84,14 +82,12 @@ module.exports = function() {
   console.log('> Starting dev server...')
   devMiddleware.waitUntilValid(() => {
     console.log('> Listening at ' + uri.info + '\n')
-    // when env is testing, don't need open it
-    if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
+    // when env is test, don't need open it
+    if (autoOpenBrowser && process.env.NODE_ENV !== 'test') {
       opn(uri)
     }
     _resolve()
   })
-
-  const pagesProxy = {}
 
   // register pages routing
   utils.subdir.forEach(dir => {

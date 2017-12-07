@@ -4,20 +4,20 @@ module.exports = function() {
   const merge = require('webpack-merge')
   const CopyWebpackPlugin = require('copy-webpack-plugin')
   const HtmlWebpackPlugin = require('html-webpack-plugin')
-  const UglifyJsWebpackPlugin = require('uglifyjs-webpack-plugin')
   const ExtractTextPlugin = require('extract-text-webpack-plugin')
   const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
   const utils = require('./utils')
   const config = require('../config')
   const baseWebpackConfig = require('./webpack.base.conf')
 
-  const isTesting = process.env.NODE_ENV === 'testing'
+  const isTest = process.env.NODE_ENV === 'test'
 
-  const env = isTesting
+  const env = isTest
     ? require('../config/test.env')
     : config.build.env
 
   const webpackConfig = merge(baseWebpackConfig, {
+    bail: true,
     module: {
       rules: utils.styleLoaders({
         sourceMap: config.build.productionSourceMap,
@@ -31,14 +31,30 @@ module.exports = function() {
       chunkFilename: utils.assetsPath(`js/[id].${new Date().valueOf()}.js`)
     },
     plugins: [
-      // new webpack.optimize.ModuleConcatenationPlugin(),
+      new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.DefinePlugin({
         'process.env': env,
-        APP_CONFIG: JSON.stringify(utils.appConfig[isTesting ? 'test' : 'prod'])
+        APP_CONFIG: JSON.stringify(utils.appConfig[isTest ? 'test' : 'prod'])
       }),
-      new UglifyJsWebpackPlugin({
-        cache: true,
-        parallel: 4
+      new webpack.optimize.UglifyJsPlugin({
+        compress: {
+          warnings: false,
+          // Disabled because of an issue with Uglify breaking seemingly valid code:
+          // https://github.com/facebookincubator/create-react-app/issues/2376
+          // Pending further investigation:
+          // https://github.com/mishoo/UglifyJS2/issues/2011
+          comparisons: false
+        },
+        mangle: {safari10: true},
+        output: {
+          // Turned on because emoji and regex is not minified properly using default
+          // https://github.com/facebookincubator/create-react-app/issues/2488
+          ascii_only: true
+        },
+        parallel: {
+          cache: true,
+          workers: 2
+        }
       }),
       // extract css into its own file
       new ExtractTextPlugin({
@@ -76,7 +92,8 @@ module.exports = function() {
           to: path.resolve(`dist/${process.env.NODE_ENV.substr(0, 4)}`, config.build.assetsSubDirectory),
           ignore: ['.*']
         }
-      ])
+      ]),
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
     ].concat(utils.subdir.map(dir => {
       // generate dist index.html with correct asset hash for caching.
       // you can customize output by editing /index.html
@@ -88,7 +105,14 @@ module.exports = function() {
         minify: {
           removeComments: true,
           collapseWhitespace: true,
-          removeAttributeQuotes: true
+          removeAttributeQuotes: true,
+          removeRedundantAttributes: true,
+          useShortDoctype: true,
+          removeStyleLinkTypeAttributes: true,
+          keepClosingSlash: true,
+          minifyJS: true,
+          minifyCSS: true,
+          minifyURLs: true
           // more options:
           // https://github.com/kangax/html-minifier#options-quick-reference
         },
