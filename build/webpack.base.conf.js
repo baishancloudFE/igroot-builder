@@ -98,7 +98,10 @@ module.exports = {
     alias: {
       '@': resolve('src'),
       '@@': resolve('src/apis/index.js'),
-      '#': require.resolve('react-hot-loader')
+      '#': require.resolve('react-hot-loader'),
+
+      // 防止 react-hot-loader 中对 react 引用时找不到
+      'react': resolve('node_modules/react')
     }
   },
 

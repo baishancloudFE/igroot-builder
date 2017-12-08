@@ -1,5 +1,5 @@
 module.exports = {
-  run: require('./build/dev-server'),
+  dev: require('./build/dev-server'),
   build: () => {
     const inquirer = require('inquirer')
     const build = require('./build/build')

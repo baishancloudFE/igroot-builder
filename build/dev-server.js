@@ -83,9 +83,7 @@ module.exports = function() {
   devMiddleware.waitUntilValid(() => {
     console.log('> Listening at ' + uri.info + '\n')
     // when env is test, don't need open it
-    if (autoOpenBrowser && process.env.NODE_ENV !== 'test') {
-      opn(uri)
-    }
+    autoOpenBrowser && opn(uri)
     _resolve()
   })
 
