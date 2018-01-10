@@ -2,6 +2,7 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const isDev = process.env.NODE_ENV === 'development'
+const { dependencies, devDependencies } = require(resolve('package'))
 
 function resolve(dir = '') {
   return path.join(process.cwd(), dir)
@@ -10,14 +11,14 @@ function resolve(dir = '') {
 const entry = {}
 utils.subdir.forEach(dir => entry[dir] = [require.resolve('./polyfills'), resolve(`src/pages/${dir}/index.jsx`)])
 
-const { businessComponents = [], externals } = utils.appConfig
+const { esModule = [], externals } = utils.appConfig
 
 const rules = [
   {
     test: /\.(js|jsx)$/,
     include: [
       resolve('src'),
-      ...businessComponents.map(component => resolve(`node_modules/${component}`))
+      ...esModule.map(component => resolve(`node_modules/${component}`))
     ],
     use: [{
       loader: 'babel-loader',
@@ -38,12 +39,12 @@ const rules = [
           'react-app'
         ],
         plugins: [
-          "transform-decorators-legacy",
-          ["import", {
-            "libraryName": "igroot",
-            "style": utils.appConfig.theme
+          'transform-decorators-legacy',
+          ['import', {
+            libraryName: 'igroot',
+            style: utils.appConfig.theme
             ? true
-            : "css"
+            : 'css'
           }]
         ],
         [isDev ? 'cacheDirectory' : 'compact']: true,
@@ -95,14 +96,19 @@ module.exports = {
 
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
-    alias: {
+    alias: Object.assign({
       '@': resolve('src'),
       '@@': resolve('src/apis/index.js'),
-      '#': require.resolve('react-hot-loader'),
+      '#': require.resolve('react-hot-loader')
+    }, (() => {
+      const pkgs = {}
 
-      // 防止 react-hot-loader 中对 react 引用时找不到
-      'react': resolve('node_modules/react')
-    }
+      Object
+        .keys(Object.assign({}, dependencies, devDependencies))
+        .forEach(pkg => pkgs[pkg] = resolve(`node_modules/${pkg}`))
+
+      return pkgs
+    })())
   },
 
   module: {
