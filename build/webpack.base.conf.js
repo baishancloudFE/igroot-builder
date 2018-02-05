@@ -24,20 +24,7 @@ const rules = [
       loader: 'babel-loader',
       options: {
         babelrc: false,
-        presets: [
-          ['env', {
-            modules: false,
-            targets: {
-              browsers: [
-                '>1%',
-                'last 4 versions',
-                'Firefox ESR',
-                'not ie < 9'
-              ]
-            }
-          }],
-          'react-app'
-        ],
+        presets: ['react-app'],
         plugins: [
           'transform-decorators-legacy',
           ['import', {
@@ -96,19 +83,13 @@ module.exports = {
 
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
-    alias: Object.assign({
+    alias: {
       '@': resolve('src'),
       '@@': resolve('src/apis/index.js'),
-      '#': require.resolve('react-hot-loader')
-    }, (() => {
-      const pkgs = {}
-
-      Object
-        .keys(Object.assign({}, dependencies, devDependencies))
-        .forEach(pkg => pkgs[pkg] = resolve(`node_modules/${pkg}`))
-
-      return pkgs
-    })())
+      '#': require.resolve('react-hot-loader'),
+      'igroot': resolve('node_modules/igroot'),
+      'react': resolve('node_modules/react')
+    }
   },
 
   module: {

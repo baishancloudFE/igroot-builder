@@ -1,6 +1,5 @@
 module.exports = function() {
   require('./check-versions')()
-  require('./utils').colors()
 
   var config = require('../config')
   if (!process.env.NODE_ENV) {
@@ -9,6 +8,7 @@ module.exports = function() {
 
   var opn = require('opn')
   var path = require('path')
+  var chalk = require('chalk')
   var express = require('express')
   var webpack = require('webpack')
   var proxyMiddleware = require('http-proxy-middleware')
@@ -81,7 +81,7 @@ module.exports = function() {
 
   console.log('> Starting dev server...')
   devMiddleware.waitUntilValid(() => {
-    console.log('> Listening at ' + uri.info + '\n')
+    console.log('> Listening at ' + chalk.cyan(uri) + '\n')
     // when env is test, don't need open it
     autoOpenBrowser && opn(uri)
     _resolve()

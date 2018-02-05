@@ -22,7 +22,7 @@ module.exports = merge(baseWebpackConfig, {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': config.dev.env,
-      APP_CONFIG: JSON.stringify(utils.appConfig.dev)
+      APP_CONFIG: JSON.stringify(utils.appConfig.define)
     }),
     new webpack.NamedModulesPlugin(),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
@@ -37,5 +37,6 @@ module.exports = merge(baseWebpackConfig, {
       template: path.resolve(`src/pages/${dir}/index.html`),
       chunks: [dir]
     })
-  }))
+  })),
+  performance: {hints: false}
 })

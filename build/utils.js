@@ -26,7 +26,8 @@ exports.cssLoaders = function (options) {
   const cssLoader = {
     loader: 'css-loader',
     options: {
-      importLoaders: 1,
+      modules: appConfig.cssModule,
+      importLoaders: 1, // 如果开启 postcss-loader，请将该值 +1
       minimize: !isDev,
       sourceMap: options.sourceMap
     }
@@ -110,19 +111,3 @@ exports.appConfig = appConfig
 exports.subdir = fs
   .readdirSync(path.resolve('src/pages'))
   .filter(file => fs.lstatSync(path.resolve(`src/pages/${file}`)).isDirectory())
-
-// 控制台打印颜色
-exports.colors = function() {
-  require('colors').setTheme({
-    error: 'red',
-    bgError: 'bgRed',
-    success: 'green',
-    bgSuccess: 'bgGreen',
-    warn: 'yellow',
-    bgWarn: 'bgYellow',
-    info: 'cyan',
-    secInfo: 'magenta',
-    data: 'gray',
-    wahaha: 'rainbow'
-  })
-}

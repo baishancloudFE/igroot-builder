@@ -1,6 +1,6 @@
 const path = require('path')
 const CLIEngine = require('eslint').CLIEngine
-require('./utils').colors()
+const chalk = require('chalk')
 
 const log = (msg, retract = 0) => console.log(
   (
@@ -11,7 +11,7 @@ const log = (msg, retract = 0) => console.log(
 )
 
 module.exports = function(fix = true) {
-  console.log('Loading...'.data)
+  console.log(chalk.gray('Loading...'))
 
   const cli = new CLIEngine({
     configFile: path.join(__dirname, '../.eslintrc'),
@@ -28,20 +28,20 @@ module.exports = function(fix = true) {
     if(!result.messages.length)   return
 
     log(
-      result.filePath.info
-      + (result.errorCount !== 0 ? `\terror count: ${result.errorCount}`.error : '')
-      + (result.warningCount !== 0 ? `\twarning count: ${result.warningCount}`.warn : '')
+      chalk.cyan(result.filePath)
+      + (result.errorCount !== 0 ? `\terror count: ${chalk.red(result.errorCount)}` : '')
+      + (result.warningCount !== 0 ? `\twarning count: ${chalk.yellow(result.warningCount)}` : '')
     )
 
     result.messages.forEach(({ line, column, ruleId, severity, message }) => {
       log(''
-        + ((severity - 1) ? ' error '.bgError : ' warning '.bgWarn)
+        + ((severity - 1) ? chalk.bgRed(' error ') : chalk.bgYellow(' warning '))
         + ' '
-        + (line + ':' + column).data
+        + chalk.gray(line + ':' + column)
         + '   rule: '
-        + ('' + ruleId).secInfo
+        + chalk.magenta('' + ruleId)
         + '   info: '
-        + ('' + message).info
+        + chalk.cyan('' + message)
       , 3)
     })
 
@@ -50,15 +50,15 @@ module.exports = function(fix = true) {
 
   log(''
     + 'Count: '
-    + (report.errorCount + ' error' + (fix ? '' : `(${report.fixableErrorCount} fixable)`)).error
+    + chalk.red(report.errorCount + ' error' + (fix ? '' : `(${report.fixableErrorCount} fixable)`))
     + '\t'
-    + (report.warningCount + ' warning' + (fix ? '' : `(${report.fixableWarningCount} fixable)`)).warn
-    + (fix ? `   ${fixedFilesCount} files fixed` : '').blue
+    + chalk.yellow(report.warningCount + ' warning' + (fix ? '' : `(${report.fixableWarningCount} fixable)`))
+    + chalk.blue(fix ? `   ${fixedFilesCount} files fixed` : '')
   )
 
   const success = ['great.', 'nice!', 'beautify~', 'perfect!']
   if(report.errorCount === 0 && report.warningCount === 0)
-    log('\n' + success[Math.floor(Math.random() * success.length)].success)
+    log('\n' + chalk.green(success[Math.floor(Math.random() * success.length)]))
 
   fix && CLIEngine.outputFixes(report)
 }
