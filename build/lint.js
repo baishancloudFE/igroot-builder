@@ -10,9 +10,10 @@ const log = (msg, retract = 0) => console.log(
   ) + msg
 )
 
-module.exports = function(fix = true) {
+module.exports = function(argv = {}) {
   console.log(chalk.gray('Loading...'))
 
+  const fix = argv.fix !== false
   const cli = new CLIEngine({
     configFile: path.join(__dirname, '../.eslintrc'),
     cwd: path.resolve('test.jsx'),

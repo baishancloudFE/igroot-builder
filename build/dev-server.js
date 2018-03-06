@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function(argv = {}) {
   require('./check-versions')()
 
   var config = require('../config')
@@ -81,9 +81,13 @@ module.exports = function() {
 
   console.log('> Starting dev server...')
   devMiddleware.waitUntilValid(() => {
-    console.log('> Listening at ' + chalk.cyan(uri) + '\n')
-    // when env is test, don't need open it
-    autoOpenBrowser && opn(uri)
+    console.log('> Listening at ' + chalk.cyan(uri) + '\n');
+
+    if (argv.openBrowser === undefined
+      ? autoOpenBrowser
+      : argv.openBrowser
+    ) opn(uri)
+
     _resolve()
   })
 
