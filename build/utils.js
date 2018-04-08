@@ -110,4 +110,7 @@ exports.appConfig = appConfig
 // pages 文件夹下所有文件夹名
 exports.subdir = fs
   .readdirSync(path.resolve('src/pages'))
-  .filter(file => fs.lstatSync(path.resolve(`src/pages/${file}`)).isDirectory())
+  .filter(file =>
+    (appConfig.include ? appConfig.include.indexOf(file) > -1 : true)
+    && fs.lstatSync(path.resolve(`src/pages/${file}`)).isDirectory()
+  )
