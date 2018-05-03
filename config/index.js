@@ -1,29 +1,18 @@
 const path = require('path')
-const port = require(path.resolve('bsy.json')).options.port
+const {domain, port, buildPath, publicPath, sourceMap} = require(path.resolve('bsy.json')).options
 
 module.exports = {
   build: {
     env: require('./prod.env'),
-    indexRoot: path.resolve('./dist'),
-    assetsRoot: path.resolve('./dist'),
+    assetsRoot: path.resolve(buildPath || './dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
-    productionSourceMap: false,
-    // Gzip off by default as many popular static hosts such as
-    // Surge or Netlify already gzip all static assets for you.
-    // Before setting to `true`, make sure to:
-    // npm install --save-dev compression-webpack-plugin
-    productionGzip: false,
+    assetsPublicPath: publicPath || '/',
+    productionSourceMap: sourceMap || false,
     productionGzipExtensions: ['js', 'css'],
-    // Run the build command with an extra argument to
-    // View the bundle analyzer report after build finishes:
-    // `npm run build --report`
-    // Set to `true` or `false` to always turn it on or off
-    bundleAnalyzerReport: process.env.npm_config_report
   },
   dev: {
     env: require('./dev.env'),
-    domain: 'localhost',
+    domain: domain || 'localhost',
     port: port,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',

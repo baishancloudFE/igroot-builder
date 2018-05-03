@@ -5,7 +5,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
-const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const utils = require('./utils')
 const config = require('../config')
 const baseWebpackConfig = require('./webpack.base.conf')
@@ -81,18 +80,11 @@ const webpackConfig = merge(baseWebpackConfig, {
     new CopyWebpackPlugin([
       {
         from: path.resolve('./src/static'),
-        to: path.resolve('dist', config.build.assetsSubDirectory),
+        to: path.join(config.build.assetsRoot, config.build.assetsSubDirectory),
         ignore: ['.*']
       }
     ]),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new CompressionWebpackPlugin({
-      asset: '[path].gz[query]',
-      algorithm: 'gzip',
-      test: new RegExp('\\.(' + config.build.productionGzipExtensions.join('|') + ')$'),
-      threshold: 10240,
-      minRatio: 0.8
-    })
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ].concat(utils.subdir.map(dir => {
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
@@ -121,6 +113,19 @@ const webpackConfig = merge(baseWebpackConfig, {
     })
   }))
 })
+
+if (utils.appConfig.gzip) {
+  const CompressionWebpackPlugin = require('compression-webpack-plugin')
+  webpackConfig.plugins.push(
+    new CompressionWebpackPlugin({
+      asset: '[path].gz[query]',
+      algorithm: 'gzip',
+      test: new RegExp('\\.(' + config.build.productionGzipExtensions.join('|') + ')$'),
+      threshold: 10240,
+      minRatio: 0.8
+    })
+  )
+}
 
 if (utils.appConfig.analyze) {
   const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin

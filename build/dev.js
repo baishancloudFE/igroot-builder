@@ -16,10 +16,10 @@ module.exports = function(argv = {}) {
   var webpackConfig = require('./webpack.dev.conf')
 
   // default port where dev server listens for incoming traffic
-  var port = process.env.PORT || utils.appConfig.port || config.dev.port
+  var port = process.env.PORT || config.dev.port
 
   // default domain where browsers open the tab
-  var domain = utils.appConfig.domain || config.dev.domain
+  var domain = config.dev.domain
 
   // automatically open browser, if not set will be false
   var autoOpenBrowser = !!config.dev.autoOpenBrowser

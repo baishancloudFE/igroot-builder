@@ -76,9 +76,7 @@ module.exports = {
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
-    publicPath: isDev
-    ? config.dev.assetsPublicPath
-    : (utils.appConfig.publicPath || config.build.assetsPublicPath)
+    publicPath: config[isDev ? 'dev' : 'build'].assetsPublicPath
   },
 
   resolve: {

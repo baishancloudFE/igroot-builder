@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
 const path = require('path')
-const inquirer = require('inquirer')
 
-const dev = require('../build/dev-server')
+const dev = require('../build/dev')
 const build = require('../build/build')
 const lint = require('../build/lint')
 
