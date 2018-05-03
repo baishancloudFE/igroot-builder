@@ -111,6 +111,6 @@ exports.appConfig = appConfig
 exports.subdir = fs
   .readdirSync(path.resolve('src/pages'))
   .filter(page => (
-    fs.statSync(path.resolve(`src/pages/${page}`)).isDirectory()
-    && (isDev ? (appConfig.include.indexOf(page) > -1) : true)
+    ((isDev && appConfig.include) ? appConfig.include.indexOf(page) > -1 : true)
+    && fs.statSync(path.resolve(`src/pages/${page}`)).isDirectory()
   ))
