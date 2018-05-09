@@ -1,32 +1,31 @@
-module.exports = function(argv = {}) {
-  require('./check-versions')()
+module.exports = function(root, console) {
+  process.env.NODE_ENV = 'development'
 
-  var config = require('../config')
-  if (!process.env.NODE_ENV) {
-    process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
-  }
-
-  var opn = require('opn')
-  var path = require('path')
   var chalk = require('chalk')
+  console(chalk.gray('> Loading config...'))
+
+  var path = require('path')
   var express = require('express')
   var webpack = require('webpack')
   var proxyMiddleware = require('http-proxy-middleware')
-  var utils = require('./utils')
-  var webpackConfig = require('./webpack.dev.conf')
+  var config = require('../config')(root)
+  var utils = require('./utils')(root, true)
+  var webpackConfig = require('./webpack.dev.conf')(root)
 
   // default port where dev server listens for incoming traffic
   var port = process.env.PORT || config.dev.port
-
+  
   // default domain where browsers open the tab
   var domain = config.dev.domain
 
   // automatically open browser, if not set will be false
   var autoOpenBrowser = !!config.dev.autoOpenBrowser
-
+  
   // Define HTTP proxies to your custom API backend
   // https://github.com/chimurai/http-proxy-middleware
   var proxyTable = config.dev.proxyTable
+  
+  console(chalk.gray('> Starting dev server...'))
 
   var app = express()
   var compiler = webpack(webpackConfig)
@@ -79,15 +78,8 @@ module.exports = function(argv = {}) {
     _resolve = resolve
   })
 
-  console.log('> Starting dev server...')
   devMiddleware.waitUntilValid(() => {
-    console.log('> Listening at ' + chalk.cyan(uri) + '\n');
-
-    if (argv.openBrowser === undefined
-      ? autoOpenBrowser
-      : argv.openBrowser
-    ) opn(uri)
-
+    console('> Listening at ' + chalk.cyan(uri) + '\n');
     _resolve()
   })
 
@@ -108,6 +100,8 @@ module.exports = function(argv = {}) {
     ready: readyPromise,
     close: () => {
       server.close()
+      utils.destory()
+      config.destory()
     }
   }
 }

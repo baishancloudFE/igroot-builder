@@ -1,7 +1,5 @@
-process.on('SIGINT', () => process.exit(1))
-
 module.exports = {
   dev: require('./build/dev'),
   build: require('./build/build'),
-  lint: fix => require('./build/lint')(fix)
+  lint: require('./build/lint')
 }

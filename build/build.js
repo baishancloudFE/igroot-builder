@@ -1,39 +1,38 @@
-const chalk = require('chalk')
-
-module.exports = function() {
-  console.log(chalk.gray('Loading config...'))
-
-  require('./check-versions')()
-
+module.exports = function(root, console) {
   process.env.NODE_ENV = 'production'
 
-  const ora = require('ora')
-  const rm = require('rimraf')
+  const chalk = require('chalk')
+  console(chalk.gray('> Loading config...'))
+
   const path = require('path')
   const webpack = require('webpack')
-  const config = require('../config')
-  const webpackConfig = require('./webpack.prod.conf')
+  const utils = require('./utils')(root)
+  const config = require('../config')(root)
+  const webpackConfig = require('./webpack.prod.conf')(root)
 
-  const spinner = ora(`Building...`)
+  console(chalk.gray(`> Building...`))
 
-  spinner.start()
+  return new Promise((resolve, reject) => {
+    webpack(webpackConfig, function(err, stats) {
+      if (err) return reject(err)
 
-  webpack(webpackConfig, function (err, stats) {
-    spinner.stop()
-    if (err) throw err
+      console(stats.toString({
+        colors: true,
+        modules: false,
+        children: false,
+        chunks: false,
+        chunkModules: false
+      }) + '\n\n')
 
-    process.stdout.write(stats.toString({
-      colors: true,
-      modules: false,
-      children: false,
-      chunks: false,
-      chunkModules: false
-    }) + '\n\n')
+      console(chalk.cyan('  Build complete.\n'))
+      console(chalk.yellow(
+        '  Tip: built files are meant to be served over an HTTP server.\n' +
+        '  Opening index.html over file:// won\'t work.\n'
+      ))
 
-    console.log(chalk.cyan('  Build complete.\n'))
-    console.log(chalk.yellow(
-      '  Tip: built files are meant to be served over an HTTP server.\n' +
-      '  Opening index.html over file:// won\'t work.\n'
-    ))
+      utils.destory()
+      config.destory()
+      resolve()
+    })
   })
 }

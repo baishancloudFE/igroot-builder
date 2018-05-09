@@ -2,26 +2,27 @@ const path = require('path')
 const CLIEngine = require('eslint').CLIEngine
 const chalk = require('chalk')
 
-const log = (msg, retract = 0) => console.log(
-  (
-    retract > 0
-      ? (new Array(retract + 1).join(' '))
-      : ''
-  ) + msg
-)
+module.exports = function(console, fix = true) {
+  fix = false // TODO: 文件回流未处理，暂不开放自动修复功能
 
-module.exports = function(argv = {}) {
-  console.log(chalk.gray('Loading...'))
+  log = (msg, retract = 0) => console(
+    (
+      retract > 0
+        ? (new Array(retract + 1).join(' '))
+        : ''
+    ) + msg
+  )
 
-  const fix = argv.fix !== false
+  console(chalk.gray('> Loading...'))
+
   const cli = new CLIEngine({
     configFile: path.join(__dirname, '../.eslintrc'),
-    cwd: path.resolve('test.jsx'),
+    cwd: path.join(root, 'test.jsx'),
     extensions: ['.js', '.jsx'],
     fix
   })
 
-  const report = cli.executeOnFiles([path.resolve('src')])
+  const report = cli.executeOnFiles([path.join(root, 'src')])
   let fixedFilesCount = 0
 
   report.results.forEach(result => {
