@@ -2,15 +2,15 @@ const fs = require('fs')
 const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
-const config = require('../config')
 const bsy = require(path.resolve('bsy.json'))
 const appConfig = bsy.options
 const isDev = process.env.NODE_ENV === 'development'
 
+if (appConfig.extend)
+  appConfig.extend = require(path.resolve(appConfig.extend))
+
 exports.assetsPath = function (_path) {
-  const assetsSubDirectory = isDev
-    ? config.dev.assetsSubDirectory
-    : config.build.assetsSubDirectory
+  const assetsSubDirectory = (!isDev && appConfig.assetsDir) ? appConfig.assetsDir : 'static'
 
   return path.posix.join(assetsSubDirectory, _path)
 }
@@ -26,6 +26,7 @@ exports.cssLoaders = function (options) {
   const cssLoader = {
     loader: 'css-loader',
     options: {
+      root: appConfig.publicPath,
       modules: appConfig.cssModule,
       importLoaders: 1, // 如果开启 postcss-loader，请将该值 +1
       minimize: !isDev,

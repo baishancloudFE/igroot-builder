@@ -1,10 +1,5 @@
 module.exports = function(argv = {}) {
-  require('./check-versions')()
-
-  var config = require('../config')
-  if (!process.env.NODE_ENV) {
-    process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
-  }
+  process.env.NODE_ENV = 'development'
 
   var opn = require('opn')
   var path = require('path')
@@ -16,17 +11,17 @@ module.exports = function(argv = {}) {
   var webpackConfig = require('./webpack.dev.conf')
 
   // default port where dev server listens for incoming traffic
-  var port = process.env.PORT || config.dev.port
+  var port = process.env.PORT || utils.appConfig.port
 
   // default domain where browsers open the tab
-  var domain = config.dev.domain
+  var domain = utils.appConfig.domain
 
   // automatically open browser, if not set will be false
-  var autoOpenBrowser = !!config.dev.autoOpenBrowser
+  var autoOpenBrowser = argv.openBrowser === undefined ? true : argv.openBrowser
 
   // Define HTTP proxies to your custom API backend
   // https://github.com/chimurai/http-proxy-middleware
-  var proxyTable = config.dev.proxyTable
+  var proxyTable = {}
 
   var app = express()
   var compiler = webpack(webpackConfig)
@@ -69,7 +64,7 @@ module.exports = function(argv = {}) {
   app.use(hotMiddleware)
 
   // serve pure static assets
-  var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
+  var staticPath = path.posix.join('/', 'static')
   app.use(staticPath, express.static('./src/static'))
 
   var uri = `http://${domain}:${port}`
@@ -83,10 +78,7 @@ module.exports = function(argv = {}) {
   devMiddleware.waitUntilValid(() => {
     console.log('> Listening at ' + chalk.cyan(uri) + '\n');
 
-    if (argv.openBrowser === undefined
-      ? autoOpenBrowser
-      : argv.openBrowser
-    ) opn(uri)
+    autoOpenBrowser && opn(uri)
 
     _resolve()
   })

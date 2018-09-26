@@ -6,30 +6,39 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const utils = require('./utils')
-const config = require('../config')
 const baseWebpackConfig = require('./webpack.base.conf')
 
-const { env } = config.build
+const {
+  sourceMap = false,
+  publicPath = '/',
+  buildPath,
+  assetsDir,
+  define,
+  extend,
+  gzip,
+  analyze
+} = utils.appConfig
 
 const webpackConfig = merge(baseWebpackConfig, {
   bail: true,
   module: {
     rules: utils.styleLoaders({
-      sourceMap: config.build.productionSourceMap,
+      sourceMap,
       extract: true
     })
   },
-  devtool: config.build.productionSourceMap ? '#source-map' : false,
+  devtool: sourceMap ? '#source-map' : false,
   output: {
-    path: config.build.assetsRoot,
+    publicPath,
+    path: path.resolve(buildPath || './dist'),
     filename: utils.assetsPath(`js/[name].js`),
     chunkFilename: utils.assetsPath(`js/[id].js`)
   },
   plugins: [
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.DefinePlugin({
-      'process.env': env,
-      APP_CONFIG: JSON.stringify(utils.appConfig.define)
+      'process.env': '"production"',
+      APP_CONFIG: JSON.stringify(define)
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
@@ -77,13 +86,11 @@ const webpackConfig = merge(baseWebpackConfig, {
       chunks: ['vendor']
     }),
     // copy custom static assets
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve('./src/static'),
-        to: path.join(config.build.assetsRoot, config.build.assetsSubDirectory),
-        ignore: ['.*']
-      }
-    ]),
+    new CopyWebpackPlugin([{
+      from: path.resolve('./src/static'),
+      to: path.join(publicPath, assetsDir),
+      ignore: ['.*']
+    }]),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ].concat(utils.subdir.map(dir => {
     // generate dist index.html with correct asset hash for caching.
@@ -112,22 +119,22 @@ const webpackConfig = merge(baseWebpackConfig, {
       chunksSortMode: 'dependency'
     })
   }))
-})
+}, extend || {})
 
-if (utils.appConfig.gzip) {
+if (gzip) {
   const CompressionWebpackPlugin = require('compression-webpack-plugin')
   webpackConfig.plugins.push(
     new CompressionWebpackPlugin({
       asset: '[path].gz[query]',
       algorithm: 'gzip',
-      test: new RegExp('\\.(' + config.build.productionGzipExtensions.join('|') + ')$'),
+      test: new RegExp('\\.(' + ['js', 'css'].join('|') + ')$'),
       threshold: 10240,
       minRatio: 0.8
     })
   )
 }
 
-if (utils.appConfig.analyze) {
+if (analyze) {
   const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 }

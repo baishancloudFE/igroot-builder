@@ -1,8 +1,6 @@
 const path = require('path')
 const utils = require('./utils')
-const config = require('../config')
 const isDev = process.env.NODE_ENV === 'development'
-const { dependencies, devDependencies } = require(resolve('package'))
 
 function resolve(dir = '') {
   return path.join(process.cwd(), dir)
@@ -11,7 +9,7 @@ function resolve(dir = '') {
 const entry = {}
 utils.subdir.forEach(dir => entry[dir] = [require.resolve('./polyfills'), resolve(`src/pages/${dir}/index.jsx`)])
 
-const { esModule = [], externals } = utils.appConfig
+const { esModule = [], externals, theme, lint } = utils.appConfig
 
 const rules = [
   {
@@ -29,7 +27,7 @@ const rules = [
           'transform-decorators-legacy',
           ['import', {
             libraryName: 'igroot',
-            style: utils.appConfig.theme
+            style: theme
             ? true
             : 'css'
           }]
@@ -57,7 +55,7 @@ const rules = [
   }
 ]
 
-if(utils.appConfig.lint) {
+if(lint) {
   rules.unshift({
     enforce: 'pre',
     test: /\.(js|jsx)$/,
@@ -74,9 +72,8 @@ module.exports = {
   externals,
 
   output: {
-    path: config.build.assetsRoot,
     filename: '[name].js',
-    publicPath: config[isDev ? 'dev' : 'build'].assetsPublicPath
+    publicPath: '/'
   },
 
   resolve: {

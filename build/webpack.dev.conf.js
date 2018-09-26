@@ -5,7 +5,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const WatchMissingNodeModulesPlugin = require('./WatchMissingNodeModulesPlugin')
 const utils = require('./utils')
-const config = require('../config')
 const baseWebpackConfig = require('./webpack.base.conf')
 
 // add hot-reload related code to entry chunks
@@ -13,16 +12,18 @@ Object.keys(baseWebpackConfig.entry).forEach(function (name) {
   baseWebpackConfig.entry[name] = [`webpack-hot-middleware/client?name=${name}`, 'react-hot-loader/patch', ...baseWebpackConfig.entry[name]]
 })
 
+const {define, extend} = utils.appConfig
+
 module.exports = merge(baseWebpackConfig, {
   module: {
-    rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap })
+    rules: utils.styleLoaders({ sourceMap: false })
   },
   // cheap-module-eval-source-map is faster for development
   devtool: '#cheap-eval-source-map',
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': config.dev.env,
-      APP_CONFIG: JSON.stringify(utils.appConfig.define)
+      'process.env': '"development"',
+      APP_CONFIG: JSON.stringify(define)
     }),
     new webpack.NamedModulesPlugin(),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
@@ -39,4 +40,4 @@ module.exports = merge(baseWebpackConfig, {
     })
   })),
   performance: {hints: false}
-})
+}, extend || {})

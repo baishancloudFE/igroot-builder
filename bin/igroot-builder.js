@@ -16,5 +16,5 @@ require('yargs')
   .demandCommand()
   .help()
   .alias('h', 'help')
-  .epilog('Copyright 2017 By BaishanCloud')
+  .epilog('Copyright 2018 By BaishanCloud')
   .argv
